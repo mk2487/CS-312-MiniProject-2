@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Converter</title>
+    <link rel="stylesheet" href="/style.css">
+    <script src="/script.js" defer></script>
+</head>
+<body>
+    <main>
+        <h1>Currency Converter</h1>
+        <p>Enter an amount and choose two currencies.</p>
+        <% if (error) { %><p class="error" role="alert"><%= error %></p><% } %>
+        <form action="/convert" method="POST" id="converter-form">
+            <label for="amount">Amount</label>
+            <input id="amount" name="amount" type="number" min="0.01" max="1000000000" step="0.01" value="<%= form.amount %>" required>
+            <label for="from">From</label>
+            <select id="from" name="from" required>
+                <% currencies.forEach(([code, name]) => { %>
+                    <option value="<%= code %>" <%= form.from === code ? "selected" : "" %>><%= code %> - <%= name %></option>
+                <% }); %>
+            </select>
+            <label for="to">To</label>
+            <select id="to" name="to" required>
+                <% currencies.forEach(([code, name]) => { %>
+                    <option value="<%= code %>" <%= form.to === code ? "selected" : "" %>><%= code %> - <%= name %></option>
+                <% }); %>
+            </select>
+            <div class="buttons">
+                <button type="submit" id="convert-button">Convert</button>
+                <button type="button" id="swap">Swap currencies</button>
+            </div>
+        </form>
+        <% if (result) { %>
+            <section class="result" aria-live="polite">
+                <h2>Result</h2>
+                <p><strong><%= result.original %> = <%= result.converted %></strong></p>
+                <p>1 <%= form.from %> = <%= result.rate %> <%= form.to %></p>
+                <p>Rate date: <%= result.date %></p>
+            </section>
+        <% } %>
+        <footer>Rates from <a href="https://frankfurter.dev/">Frankfurter</a>. Bank rates and fees may differ.</footer>
+    </main>
+</body>
+</html>
